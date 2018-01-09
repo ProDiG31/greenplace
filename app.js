@@ -1,5 +1,8 @@
 var http = require('http');
 var url = require('url');
+
+var GoogleMapsLoader = require('google-maps'); // only for common js environments 
+
 var googleMapsClient = require('@google/maps').createClient({
 	key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
 });
@@ -17,6 +20,11 @@ http.createServer(function (req, res) {
 
 	res.write('Hello world');
 
+	//Load google map
+	GoogleMapsLoader.load(function (google) {
+		new google.maps.Map(el, options);
+	});	
+	
 	// Geocode an address.
 	googleMapsClient.geocode({
 		address: '1600 Amphitheatre Parkway, Mountain View, CA'
