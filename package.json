@@ -1,0 +1,23 @@
+{
+  "name": "greenplace",
+  "version": "0.0.0",
+  "description": "greenplace",
+  "main": "index.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProDiG31/greenplace.git"
+  },
+  "author": "Romain & Gregoire",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProDiG31/greenplace/issues"
+  },
+  "homepage": "https://github.com/ProDiG31/greenplace#readme"
+}
