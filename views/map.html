@@ -26,10 +26,29 @@
 				zoom: 11,
 				center: uluru
 			});
-			//			var marker = new google.maps.Marker({
-			//				position: uluru,
-			//				map: map
-			//			});
+
+			$.getJSON("/data", function(data) {
+				$.each(data, function(key, val) {
+					let treeStart = {
+						lat: val.geometry.coordinates[1],
+						lng: val.geometry.coordinates[0]
+					};
+
+//					console.log("tree = " + treeStart.lat + ' ' + treeStart.lng);
+					const icon = "https://www.google.fr/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiD6qropsvYAhWHvRQKHZyNCK0QjRwIBw&url=http%3A%2F%2Fwww.freepngimg.com%2Fnature%2Ftree&psig=AOvVaw2OWB6GluivBx8mABdKCNnP&ust=1515601797263085";
+					
+//					if (val.fields.geo_shape.type == "LineString") {
+						new google.maps.Marker({
+							position: treeStart,
+							map: map
+						});
+//					} else if (val.fields.geo_shape.type == "MultiLineString"){
+//						
+//					} else {
+//						console.log("[ERROR] - "+val.fields.geo_shape.type); 
+//					}
+				});
+			});
 		}
 
 	</script>
@@ -38,12 +57,15 @@
 
 	</script>
 
+	<!--
 
 	<script>
 		$.getJSON("/data", function(data) {
+			console.log(data);
+
 			var items = [];
 			$.each(data, function(key, val) {
-				items.push("<li id='" + key + "'>" + val + "</li>");
+				items.push("<li id='" + key + "'>" + val.fields.patrimoine + "</li>");
 			});
 
 			$("<ul/>", {
@@ -54,6 +76,7 @@
 		});
 
 	</script>
+-->
 </body>
 
 </html>

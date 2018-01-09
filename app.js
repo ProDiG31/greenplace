@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/data', (req, res) => {
-	fs.readFile('./app/data/arbres-d-alignement', 'utf-8', function (error, content) {
+	fs.readFile('./app/data/arbres-d-alignement.json', 'utf-8', function (error, content) {
 		res.setHeader('Content-Type', 'application/json');
 		res.send(content);
 	});
