@@ -1,42 +1,28 @@
-var http = require('http');
-var url = require('url');
+const express = require('express');
+const http = require('http');
+const url = require('url');
+const fs = require('fs');
+const postman = require('postman');
+//const request = require('fetch.io');
+const app = express();
+//const googleMapsClient = require('@google/maps').createClient({
+//  key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
+//});
 
-var GoogleMapsLoader = require('google-maps'); // only for common js environments 
-
-var googleMapsClient = require('@google/maps').createClient({
-	key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
+app.get('/', (req, res) => {
+	fs.readFile('./views/map.html', 'utf-8', function (error, content) {
+		res.writeHead(200, {
+			"Content-Type": "text/html"
+		});
+		res.end(content);
+	});
 });
 
-
-http.createServer(function (req, res) {
-
-	var page = url.parse(req.url).pathname;
-
-	console.log(page);
-
-	res.writeHead(200, {
-		'content-type': 'text/plain'
+app.get('/data', (req, res) => {
+	fs.readFile('./app/data/arbres-d-alignement', 'utf-8', function (error, content) {
+		res.setHeader('Content-Type', 'application/json');
+		res.send(content);
 	});
+})
 
-	res.write('Hello world');
-
-	//Load google map
-	GoogleMapsLoader.load(function (google) {
-		new google.maps.Map(el, options);
-	});	
-	
-	// Geocode an address.
-	googleMapsClient.geocode({
-		address: '1600 Amphitheatre Parkway, Mountain View, CA'
-	}, function (err, response) {
-		if (!err) {
-			console.log("GEOCODE OK !")
-			console.log(response.json.results);
-		}
-	});
-
-	res.end();
-
-	console.log("node test")
-
-}).listen(3000);
+app.listen(3000);

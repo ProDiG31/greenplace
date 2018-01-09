@@ -1,31 +1,59 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-       #map {
-        height: 400px;
-        width: 100%;
-       }
-    </style>
-  </head>
-  <body>
-    <h3>My Google Maps Demo</h3>
-    <div id="map"></div>
-    <script>
-      function initMap() {
-        var uluru = {lat: 43.624984999999995, lng: 1.4319346};
-        var map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 11,
-          center: uluru
-        });
-        var marker = new google.maps.Marker({
-          position: uluru,
-          map: map
-        });
-      }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap">
-    </script>
-  </body>
+
+<head>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+	<style>
+		#map {
+			height: 400px;
+			width: 100%;
+		}
+
+	</style>
+</head>
+
+<body>
+	<h3>My Google Maps Demo</h3>
+	<div id="map"></div>
+	<script>
+		function initMap() {
+			var uluru = {
+				lat: 43.624984999999995,
+				lng: 1.4319346
+			};
+			var map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 11,
+				center: uluru
+			});
+			//			var marker = new google.maps.Marker({
+			//				position: uluru,
+			//				map: map
+			//			});
+		}
+
+	</script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap">
+
+
+	</script>
+
+
+	<script>
+		$.getJSON("/data", function(data) {
+			var items = [];
+			$.each(data, function(key, val) {
+				items.push("<li id='" + key + "'>" + val + "</li>");
+			});
+
+			$("<ul/>", {
+				"class": "my-new-list",
+				html: items.join("")
+			}).appendTo("body");
+			console.log(items);
+		});
+
+	</script>
+</body>
+
 </html>

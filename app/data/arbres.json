@@ -1,0 +1,55 @@
+[{
+	"datasetid": "arbres-d-alignement",
+	"recordid": "fa1d372d28c4e1dd867423b5f1a3042a0c1d71b7",
+	"fields": {
+		"geo_shape": {
+			"type": "LineString",
+			"coordinates": [[1.364538462391699, 43.607895637753145], [1.366954709293945, 43.60727326192625], [1.367107627349944, 43.60720463456291]]
+		},
+		"patrimoine": "22 ERABLE DE ROTTERDAM",
+		"adresse": "RUE ALAIN FOURNIER",
+		"id": 425,
+		"geo_point_2d": [43.60756270143138, 1.3658274469001002]
+	},
+	"geometry": {
+		"type": "Point",
+		"coordinates": [1.3658274469001002, 43.60756270143138]
+	},
+	"record_timestamp": "2018-01-07T07:00:52+01:00"
+}, {
+	"datasetid": "arbres-d-alignement",
+	"recordid": "64761226fc3f53fcbb2125bd71c9380c7f001cd0",
+	"fields": {
+		"geo_shape": {
+			"type": "LineString",
+			"coordinates": [[1.429573345518412, 43.59799871312985], [1.429307877307437, 43.5982719385894]]
+		},
+		"patrimoine": "5 CHENE VERT",
+		"adresse": "RUE VILLENEUVE",
+		"id": 432,
+		"geo_point_2d": [43.59813532585962, 1.4294406114129246]
+	},
+	"geometry": {
+		"type": "Point",
+		"coordinates": [1.4294406114129246, 43.59813532585962]
+	},
+	"record_timestamp": "2018-01-07T07:00:52+01:00"
+}, {
+	"datasetid": "arbres-d-alignement",
+	"recordid": "c6ef91560ebdae1e1ae0fb478bef240f46f5fad5",
+	"fields": {
+		"geo_shape": {
+			"type": "LineString",
+			"coordinates": [[1.355300705283595, 43.60625429474757], [1.355122972116537, 43.604940783801155], [1.354986779640031, 43.604769485654884], [1.353349348952312, 43.60379715605682]]
+		},
+		"patrimoine": "52 FRENE",
+		"adresse": "IMP. JEANNE BENOZZI",
+		"id": 426,
+		"geo_point_2d": [43.604824717684245, 1.3546255062775143]
+	},
+	"geometry": {
+		"type": "Point",
+		"coordinates": [1.3546255062775143, 43.604824717684245]
+	},
+	"record_timestamp": "2018-01-07T07:00:52+01:00"
+}]
