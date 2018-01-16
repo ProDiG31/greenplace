@@ -44,56 +44,61 @@
 				center: uluru
 			});
 
-			$.getJSON("/dataJson", function(data) {
-				
-				$.each(data, function(key, val) {
-
-					var contentString = '<div id="content">' +
-						'<div id="siteNotice">' +
-						'</div>' +
-						'<h1 id="firstHeading" class="firstHeading">' + val.fields.patrimoine + '</h1>' +
-						'<div id="bodyContent">' +
-						'<p><b>Location : </b>' + val.fields.adresse + '</p>' +
-						'<p><b> Recorded : </b>' + val.record_timestamp + '</p>' +
-						'<p><b> Coordinate : </b>' + '[' + val.geometry.coordinates[1] + ',' + val.geometry.coordinates[0] + ']' + '</p>' +
-						'</div>' +
-						'</div>';
-
-					var infowindow = new google.maps.InfoWindow({
-						content: contentString,
-						position: {
-							lat: val.geometry.coordinates[1],
-							lng: val.geometry.coordinates[0]
-						}
-					});
-
-					var imageTree = "/data/deciduous-tree.png";
-
-					let coordinate = val.fields.geo_shape.coordinates;
-					let flightPlanCoordinates = new Array(coordinate.length);
-
-					for (let i = 0; i < coordinate.length; i++) {
-						flightPlanCoordinates[i] = {
-							lat: coordinate[i][1],
-							lng: coordinate[i][0]
-						};
-					}
-
-					var flightPath = new google.maps.Polyline({
-						path: flightPlanCoordinates,
-						geodesic: true,
-						strokeColor: '#73BA37',
-						strokeOpacity: .6,
-						strokeWeight: 6
-					});
-
+			//			$.getJSON("/dataJson", function(data) {
+			//				
+			//				$.each(data, function(key, val) {
+			//
+			//					var contentString = '<div id="content">' +
+			//						'<div id="siteNotice">' +
+			//						'</div>' +
+			//						'<h1 id="firstHeading" class="firstHeading">' + val.fields.patrimoine + '</h1>' +
+			//						'<div id="bodyContent">' +
+			//						'<p><b>Location : </b>' + val.fields.adresse + '</p>' +
+			//						'<p><b> Recorded : </b>' + val.record_timestamp + '</p>' +
+			//						'<p><b> Coordinate : </b>' + '[' + val.geometry.coordinates[1] + ',' + val.geometry.coordinates[0] + ']' + '</p>' +
+			//						'</div>' +
+			//						'</div>';
+			//
+			//					var infowindow = new google.maps.InfoWindow({
+			//						content: contentString,
+			//						position: {
+			//							lat: val.geometry.coordinates[1],
+			//							lng: val.geometry.coordinates[0]
+			//						}
+			//					});
+			//
+			//					var imageTree = "/data/deciduous-tree.png";
+			//
+			//					let coordinate = val.fields.geo_shape.coordinates;
+			//					let flightPlanCoordinates = new Array(coordinate.length);
+			//
+			//					for (let i = 0; i < coordinate.length; i++) {
+			//						flightPlanCoordinates[i] = {
+			//							lat: coordinate[i][1],
+			//							lng: coordinate[i][0]
+			//						};
+			//					}
+			//
+			//					var flightPath = new google.maps.Polyline({
+			//						path: flightPlanCoordinates,
+			//						geodesic: true,
+			//						strokeColor: '#73BA37',
+			//						strokeOpacity: .6,
+			//						strokeWeight: 6
+			//					});
+			$.get("/dataMap", (data) => {
+				data.forEach((flightPath) => {
+					console.log("FlightPath = " + flightPath)
 					flightPath.addListener('click', function() {
 						infowindow.open(map)
 					})
 					flightPath.setMap(map);
-				});
-			});
-		}
+				})
+			})
+
+
+
+		};
 
 	</script>
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap">
