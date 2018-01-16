@@ -9,7 +9,7 @@ const app = express();
 //  key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
 //});
 
-app.use('/css', express.static('./views/css'));
+app.use('/css', express.static(__dirname + '/views/css'));
 app.use('/js', express.static(__dirname + '/views/js'));
 app.use('/data', express.static(__dirname + '/views/data'));
 
