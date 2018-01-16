@@ -2,7 +2,8 @@
 <html>
 
 <head>
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="/js/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
 
 	<style>
 		#map {
@@ -14,39 +15,104 @@
 </head>
 
 <body>
-	<h3>My Google Maps Demo</h3>
+	<!-- As a heading -->
+	<header class="navbar navbar-expand flex-column flex-md-row">
+		<a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Bootstrap">
+  			<img src="/data/deciduous-tree.png" width="30" height="30" class="d-inline-block align-top" alt=""> <title>Green Place</title></img>
+		</a> Green Place
+		<div class="navbar-nav-scroll">
+			<ul class="navbar-nav bd-navbar-nav flex-row">
+				<li class="nav-item">
+					<a class="nav-link" href="/">Home</a>
+				</li>
+			</ul>
+		</div>
+	</header>
+
+
 	<div id="map"></div>
 	<script>
 		function initMap() {
+
 			var uluru = {
 				lat: 43.624984999999995,
 				lng: 1.4319346
 			};
 			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 11,
+				zoom: 12,
 				center: uluru
 			});
 
 			$.getJSON("/data", function(data) {
 				$.each(data, function(key, val) {
-					let treeStart = {
-						lat: val.geometry.coordinates[1],
-						lng: val.geometry.coordinates[0]
-					};
 
-//					console.log("tree = " + treeStart.lat + ' ' + treeStart.lng);
-					const icon = "https://www.google.fr/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=0ahUKEwiD6qropsvYAhWHvRQKHZyNCK0QjRwIBw&url=http%3A%2F%2Fwww.freepngimg.com%2Fnature%2Ftree&psig=AOvVaw2OWB6GluivBx8mABdKCNnP&ust=1515601797263085";
-					
-//					if (val.fields.geo_shape.type == "LineString") {
-						new google.maps.Marker({
-							position: treeStart,
-							map: map
-						});
-//					} else if (val.fields.geo_shape.type == "MultiLineString"){
+					var contentString = '<div id="content">' +
+						'<div id="siteNotice">' +
+						'</div>' +
+						'<h1 id="firstHeading" class="firstHeading">' + val.fields.patrimoine + '</h1>' +
+						'<div id="bodyContent">' +
+						'<p><b>Location : </b>' + val.fields.adresse + '</p>' +
+						'<p><b> Recorded : </b>' + val.record_timestamp + '</p>' +
+						'<p><b> Coordinate : </b>' + '[' + val.geometry.coordinates[1] + ',' + val.geometry.coordinates[0] + ']' + '</p>' +
+						'</div>' +
+						'</div>';
+
+					var infowindow = new google.maps.InfoWindow({
+						content: contentString
+					});
+
+					var imageTree = "/data/deciduous-tree.png";
+					//					 	var imageIcon = "https://png.icons8.com/color/50/000000/deciduous-tree.png";
+
+					if (val.fields.geo_shape.type == "LineString") {
+
+//						for(Object o: arr){
+//							if ( o instanceof JSONObject ) {
+//								parse((JSONObject)o);
+//							}
+//						}
 //						
-//					} else {
-//						console.log("[ERROR] - "+val.fields.geo_shape.type); 
-//					}
+						var flightPath = new google.maps.Polyline({
+							path: val.fields.geo_shape.coordinates,
+							geodesic: true,
+							strokeColor: '#FF0000',
+							strokeOpacity: 1.0,
+							strokeWeight: 2
+						});
+
+						flightPath.setMap(map);
+						
+//						let treeStart = {
+//							lat: val.geometry.coordinates[1],
+//							lng: val.geometry.coordinates[0]
+//						};
+//
+//						var marker = new google.maps.Marker({
+//							position: treeStart,
+//							map: map,
+//							icon: imageTree
+//						});
+
+					} else if (val.fields.geo_shape.type == "MultiLineString") {
+
+						let treeStart = {
+							lat: val.geometry.coordinates[1],
+							lng: val.geometry.coordinates[0]
+						};
+
+						var marker = new google.maps.Marker({
+							position: treeStart,
+							map: map,
+						});
+
+					}
+					//						
+					//					} else {
+					//						console.log("[ERROR] - "+val.fields.geo_shape.type); 
+					//					}
+//					marker.addListener('click', function() {
+//						infowindow.open(map, marker);
+//					});
 				});
 			});
 		}
@@ -77,6 +143,9 @@
 
 	</script>
 -->
+
+	<script src="/js/popper.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
 </body>
 
 </html>
