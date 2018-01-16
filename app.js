@@ -4,7 +4,8 @@ const url = require('url');
 const fs = require('fs');
 const postman = require('postman');
 const file = require('./app/data/arbres-d-alignement.json');
-
+const _ = require('lodash');
+//const _ = require('lodash/core');
 const app = express();
 //const googleMapsClient = require('@google/maps').createClient({
 //  key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
@@ -40,15 +41,23 @@ app.get('/dataMap', (req, res) => {
 	arr = [];
 	for (var val in file) {
 		let coordinate = file[val].fields.geo_shape.coordinates;
-		for (let i = 0; i < coordinate.length; i++) {
-			flightPlanCoordinates = coordinate.map((obj) => {
-				let robj = {
-					lat: obj[1],
-					lng: obj[0]
-				}
-				return robj;
-			})
+
+		let flightPlanCoordinates;
+		
+		if (file[val].fields.geo_shape.type == "MultiLineString") {
+			coordinate = _.flatten(coordinate);	
 		}
+		
+		for (let i = 0; i < coordinate.length; i++) {
+				flightPlanCoordinates = coordinate.map((obj) => {
+					let robj = {
+						lat: obj[1],
+						lng: obj[0]
+					}
+					return robj;
+				})
+			}
+		
 		const arrTree = [file[val].fields.patrimoine, file[val].fields.adresse, file[val].record_timestamp, file[val].geometry.coordinates[1], file[val].geometry.coordinates[0], flightPlanCoordinates]
 		arr.push(arrTree);
 	}
