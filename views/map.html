@@ -7,7 +7,7 @@
 
 	<style>
 		#map {
-			height: 400px;
+			height: 600px;
 			width: 100%;
 		}
 
@@ -29,95 +29,72 @@
 			</ul>
 		</div>
 	</header>
+	
+	<div id="map"/>
+	
+</body>
 
+<script>
+	function initMap() {
 
-	<div id="map"></div>
-	<script>
-		function initMap() {
-
-			var uluru = {
-				lat: 43.624984999999995,
-				lng: 1.4319346
-			};
-			var map = new google.maps.Map(document.getElementById('map'), {
-				zoom: 12,
-				center: uluru
-			});
-			var imageTree = "/data/deciduous-tree.png";
-			$.get("/dataMap", (data) => {
-//				console.log("ReturnOK")
-				data.forEach((dataTree) => {
-
-					let contentString = '<div id="content">' +
-						'<div id="siteNotice">' +
-						'</div>' +
-						'<h1 id="firstHeading" class="firstHeading">' + dataTree[0] + '</h1>' +
-						'<div id="bodyContent">' +
-						'<p><b>Location : </b>' + dataTree[1] + '</p>' +
-						'<p><b> Recorded : </b>' + dataTree[2]
-					'</p>' +
-					'<p><b> Coordinate : </b>' + '[' + dataTree[3] + ',' + dataTree[4] + ']' + '</p>' +
-						'</div>' +
-						'</div>';
-
-					let infowindow = new google.maps.InfoWindow({
-						content: contentString,
-						position: {
-							lat: dataTree[3],
-							lng: dataTree[4]
-						}
-					});
-
-
-					let flightPlanCoordinates = new Array(dataTree[5].length);
-					
-					var flightPath = new google.maps.Polyline({
-						path: dataTree[5],
-						geodesic: true,
-						strokeColor: '#73BA37',
-						strokeOpacity: .6,
-						strokeWeight: 6
-					});
-
-					flightPath.addListener('click', function() {
-						infowindow.open(map)
-					})
-
-					flightPath.setMap(map);
-					
-				})
-			})
+		var uluru = {
+			lat: 43.624984999999995,
+			lng: 1.4319346
 		};
 
-	</script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap">
-
-
-	</script>
-
-	<!--
-
-	<script>
-		$.getJSON("/data", function(data) {
-			console.log(data);
-
-			var items = [];
-			$.each(data, function(key, val) {
-				items.push("<li id='" + key + "'>" + val.fields.patrimoine + "</li>");
-			});
-
-			$("<ul/>", {
-				"class": "my-new-list",
-				html: items.join("")
-			}).appendTo("body");
-			console.log(items);
+		var map = new google.maps.Map(document.getElementById('map'), {
+			zoom: 12,
+			center: uluru
 		});
 
-	</script>
--->
+		$.get("/dataMap", (data) => {
+			data.forEach((dataTree) => {
 
-	<script src="/js/popper.min.js"></script>
-	<script src="/js/bootstrap.min.js"></script>
-</body>
+				let contentString = '<div id="content">' +
+					'<div id="siteNotice">' +
+					'</div>' +
+					'<h1 id="firstHeading" class="firstHeading">' + dataTree[0] + '</h1>' +
+					'<div id="bodyContent">' +
+					'<p><b> Location : </b>' + dataTree[1] + '</p>' +
+					'<p><b> Recorded : </b>' + dataTree[2] + '</p>' +
+					'<p><b> Coordinate : </b>' + '[' + dataTree[3] + ',' + dataTree[4] + ']' + '</p>' +
+					'</div></div>';
+
+				let infowindow = new google.maps.InfoWindow({
+					content: contentString,
+					position: {
+						lat: dataTree[3],
+						lng: dataTree[4]
+					}
+				});
+
+
+				let flightPlanCoordinates = new Array(dataTree[5].length);
+
+				var flightPath = new google.maps.Polyline({
+					path: dataTree[5],
+					geodesic: true,
+					strokeColor: '#73BA37',
+					strokeOpacity: .6,
+					strokeWeight: 6
+				});
+
+				flightPath.addListener('click', function() {
+					infowindow.open(map);
+				})
+
+				flightPath.setMap(map);
+
+			})
+		})
+	};
+
+</script>
+
+<!--Deployement de la map-->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap"></script>
+<script src="/js/popper.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
 
 </html>
