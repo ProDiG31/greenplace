@@ -43,61 +43,50 @@
 				zoom: 12,
 				center: uluru
 			});
-
-			//			$.getJSON("/dataJson", function(data) {
-			//				
-			//				$.each(data, function(key, val) {
-			//
-			//					var contentString = '<div id="content">' +
-			//						'<div id="siteNotice">' +
-			//						'</div>' +
-			//						'<h1 id="firstHeading" class="firstHeading">' + val.fields.patrimoine + '</h1>' +
-			//						'<div id="bodyContent">' +
-			//						'<p><b>Location : </b>' + val.fields.adresse + '</p>' +
-			//						'<p><b> Recorded : </b>' + val.record_timestamp + '</p>' +
-			//						'<p><b> Coordinate : </b>' + '[' + val.geometry.coordinates[1] + ',' + val.geometry.coordinates[0] + ']' + '</p>' +
-			//						'</div>' +
-			//						'</div>';
-			//
-			//					var infowindow = new google.maps.InfoWindow({
-			//						content: contentString,
-			//						position: {
-			//							lat: val.geometry.coordinates[1],
-			//							lng: val.geometry.coordinates[0]
-			//						}
-			//					});
-			//
-			//					var imageTree = "/data/deciduous-tree.png";
-			//
-			//					let coordinate = val.fields.geo_shape.coordinates;
-			//					let flightPlanCoordinates = new Array(coordinate.length);
-			//
-			//					for (let i = 0; i < coordinate.length; i++) {
-			//						flightPlanCoordinates[i] = {
-			//							lat: coordinate[i][1],
-			//							lng: coordinate[i][0]
-			//						};
-			//					}
-			//
-			//					var flightPath = new google.maps.Polyline({
-			//						path: flightPlanCoordinates,
-			//						geodesic: true,
-			//						strokeColor: '#73BA37',
-			//						strokeOpacity: .6,
-			//						strokeWeight: 6
-			//					});
+			var imageTree = "/data/deciduous-tree.png";
 			$.get("/dataMap", (data) => {
-				data.forEach((flightPath) => {
-					console.log("FlightPath = " + flightPath)
+//				console.log("ReturnOK")
+				data.forEach((dataTree) => {
+
+					let contentString = '<div id="content">' +
+						'<div id="siteNotice">' +
+						'</div>' +
+						'<h1 id="firstHeading" class="firstHeading">' + dataTree[0] + '</h1>' +
+						'<div id="bodyContent">' +
+						'<p><b>Location : </b>' + dataTree[1] + '</p>' +
+						'<p><b> Recorded : </b>' + dataTree[2]
+					'</p>' +
+					'<p><b> Coordinate : </b>' + '[' + dataTree[3] + ',' + dataTree[4] + ']' + '</p>' +
+						'</div>' +
+						'</div>';
+
+					let infowindow = new google.maps.InfoWindow({
+						content: contentString,
+						position: {
+							lat: dataTree[3],
+							lng: dataTree[4]
+						}
+					});
+
+
+					let flightPlanCoordinates = new Array(dataTree[5].length);
+					
+					var flightPath = new google.maps.Polyline({
+						path: dataTree[5],
+						geodesic: true,
+						strokeColor: '#73BA37',
+						strokeOpacity: .6,
+						strokeWeight: 6
+					});
+
+
 					flightPath.addListener('click', function() {
 						infowindow.open(map)
 					})
 					flightPath.setMap(map);
+					
 				})
 			})
-
-
-
 		};
 
 	</script>
