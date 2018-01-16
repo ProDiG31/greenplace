@@ -9,9 +9,9 @@ const app = express();
 //  key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
 //});
 
-app.use('/css', express.static(__dirname + '/views/css'));
-app.use('/js', express.static(__dirname + '/views/js'));
-app.use('/data', express.static(__dirname + '/views/data'));
+app.use('/css'	, express.static	(__dirname + '/views/css'));
+app.use('/js'	, express.static	(__dirname + '/views/js'));
+app.use('/data'	, express.static	(__dirname + '/views/data'));
 
 app.get('/', (req, res) => {
 	fs.readFile('./views/map.html', 'utf-8', function (error, content) {
@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 	});
 });
 
-app.get('/data', (req, res) => {
+app.get('/dataJson', (req, res) => {
 	fs.readFile('./app/data/arbres-d-alignement.json', 'utf-8', function (error, content) {
 		res.setHeader('Content-Type', 'application/json');
 		res.send(content);
