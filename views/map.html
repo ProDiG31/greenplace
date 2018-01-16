@@ -70,7 +70,11 @@
 								let flightPlanCoordinates = [];
 								let coordinate = json.parse(val.fields.geo_shape.coordinates);
 								
-								for (Object o : coordinate ) {
+									console.log("FLiGPS = " + flightPlanCoordinates);
+									console.log("FLiGPS = " + val.fields.geo_shape.coordinates);
+									console.log("FLiGPS = " + coordinate);
+									
+								for (var o in coordinate ) {
 									if (o instanceof JSONObject) {
 										//								parse((JSONObject) o);
 										flightPlanCoordinates += {
