@@ -1,17 +1,13 @@
 const express = require('express');
-// const http = require('http');
-// const url = require('url');
 const fs = require('fs');
-// const postman = require('postman');
-const file = require('./app/data/arbres-d-alignement.json');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
-// const _ = require('lodash/core');
+
 const app = express();
+const file = require('./app/data/arbres-d-alignement.json');
+
 app.use(bodyParser.json());
-// const googleMapsClient = require('@google/maps').createClient({
-//  key: 'AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs'
-// });
+
 
 app.use('/css', express.static(`${__dirname}/views/css`));
 app.use('/js', express.static(`${__dirname}/views/js`));
@@ -53,15 +49,15 @@ app.get('/tree/:id', (req, res) => {
 
 app.get('/dataMap', (req, res) => {
   const arr = [];
-  file.forEach(val => {
-    let coordinate = file[val].fields.geo_shape.coordinates;
+  file.forEach((val) => {
+    let coordinate = val.fields.geo_shape.coordinates;
     let flightPlanCoordinates;
 
-    if (file[val].fields.geo_shape.type == 'MultiLineString') {
+    if (val.fields.geo_shape.type === 'MultiLineString') {
       coordinate = _.flatten(coordinate);
     }
 
-    for (let i = 0; i < coordinate.length; i++) {
+    for (let i = 0; i < coordinate.length; i += 1) {
       flightPlanCoordinates = coordinate.map((obj) => {
         const robj = {
           lat: obj[1],
@@ -71,12 +67,13 @@ app.get('/dataMap', (req, res) => {
       });
     }
 
-    const arrTree = [file[val].fields.patrimoine, file[val].fields.adresse, file[val].record_timestamp, file[val].geometry.coordinates[1], file[val].geometry.coordinates[0], flightPlanCoordinates];
+    const markerCoord = val.geometry.coordinates;
+    const arrTree = [val.fields.patrimoine, val.fields.adresse, val.record_timestamp, markerCoord[1], markerCoord[0], flightPlanCoordinates];
     arr.push(arrTree);
-  }
-  res.json(arr) 
-);
+  });
+  res.json(arr);
 });
 
 
+console.log('App Launched on post 3000 ');
 app.listen(3000);
