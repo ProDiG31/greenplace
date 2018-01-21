@@ -47,7 +47,7 @@
 			center: uluru
 		});
 
-		$.get("/dataMap", (data) => {
+		$.get("/dataJson", (data) => {
 			data.forEach((dataTree) => {
 
 				let contentString = '<div id="content">' +
@@ -58,6 +58,7 @@
 					'<p><b> Location : </b>' + dataTree[1] + '</p>' +
 					'<p><b> Recorded : </b>' + dataTree[2] + '</p>' +
 					'<p><b> Coordinate : </b>' + '[' + dataTree[3] + ',' + dataTree[4] + ']' + '</p>' +
+					'<p> <button type="button" class="btn btn-success" onclick=window.location.href="/dataJson/' + dataTree[6] + '">Detail</button>'
 					'</div></div>';
 
 				let infowindow = new google.maps.InfoWindow({

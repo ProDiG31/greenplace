@@ -8,7 +8,6 @@ const file = require('./app/data/arbres-d-alignement.json');
 
 app.use(bodyParser.json());
 
-
 app.use('/css', express.static(`${__dirname}/views/css`));
 app.use('/js', express.static(`${__dirname}/views/js`));
 app.use('/data', express.static(`${__dirname}/views/data`));
@@ -22,32 +21,17 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/dataJson', (req, res) => {
-  fs.readFile('./app/data/arbres-d-alignement.json', 'utf-8', (error, content) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(content);
-  });
-});
-
-app.get('/tree/:id', (req, res) => {
+app.get('/dataJson/:id', (req, res) => {
   const { id } = req.params;
-  let tree;
-
-  for (let index = 0; index < JSON.length; index += 1) {
-    tree = file[index];
-    console.log(`tree id = ${tree.recordid}  _ ID = ${id}`);
-
-    if (tree.recordid === id) {
-      console.log('tree found !');
-      break;
+  for (let index = 0; index < file.length; index += 1) {
+    if (file[index].recordid === id) {
+      res.json(file[index]);
     }
-    tree = null;
   }
-  console.log('tree found2 !');
-  if (tree != null) res.json(tree);
+  res.redirect('back');
 });
 
-app.get('/dataMap', (req, res) => {
+app.get('/dataJson', (req, res) => {
   const arr = [];
   file.forEach((val) => {
     let coordinate = val.fields.geo_shape.coordinates;
@@ -68,7 +52,7 @@ app.get('/dataMap', (req, res) => {
     }
 
     const markerCoord = val.geometry.coordinates;
-    const arrTree = [val.fields.patrimoine, val.fields.adresse, val.record_timestamp, markerCoord[1], markerCoord[0], flightPlanCoordinates];
+    const arrTree = [val.fields.patrimoine, val.fields.adresse, val.record_timestamp, markerCoord[1], markerCoord[0], flightPlanCoordinates, val.recordid];
     arr.push(arrTree);
   });
   res.json(arr);
