@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ProDiG31/greenplace#readme",
   "devDependencies": {
+    "babel-eslint": "^8.2.1",
     "chai": "^4.1.2",
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^16.1.0",
@@ -31,8 +32,12 @@
   },
   "dependencies": {
     "@google/maps": "^0.4.5",
+    "body-parser": "^1.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "express": "^4.16.2",
     "fetch.io": "^4.1.2",
     "google-maps": "^3.2.1",
+    "lodash": "^4.17.4",
     "postman": "^0.2.0"
   }
 }
