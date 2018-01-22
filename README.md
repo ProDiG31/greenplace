@@ -1,22 +1,24 @@
-<b> Projet nodeJs :</b>  greenplace 
+<b> Projet nodeJs :</b>  greenplace<br>  
 <b> Groupe de travail : </b> 
 - Ducros Romain 
 - Maria Gregoire 
 
-<b>install :</b>
+<b>Install :</b>
 
 > npm install greenplace
 
-<b>path :</b>
+<b>Path :</b>
 
-<b> > /</b>
-=> page d'accueil 
-<b> > /dataJson</b>
-=> donnée extrait et formaté du fichier json pour etre lu par la carte   
-<b> > /dataJson/:id</b>
-=> donnée extrait et formaté d' un arbre du fichier json.
+> /
+=> page d'accueil.<br>
 
-<b>idea :</b>
+> /dataJson
+=> donnée extrait et formaté du fichier json pour etre lu par la carte.<br>
+
+> /dataJson/:id
+=> donnée extrait et formaté d' un arbre du fichier json.<br>
+
+<b>Idea :</b>
  
  - [ ] Gestion de compte / session 
  - [ ] Ajout d'arbre 
