@@ -9,13 +9,13 @@
 
 <b>Path :</b>
 
-> /
+> / <br>
 => page d'accueil.<br>
 
-> /dataJson
+> /dataJson <br>
 => donnée extrait et formaté du fichier json pour etre lu par la carte.<br>
 
-> /dataJson/:id
+> /dataJson/:id <br>
 => donnée extrait et formaté d' un arbre du fichier json.<br>
 
 <b>Idea :</b>
