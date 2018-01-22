@@ -92,11 +92,10 @@ io.sockets.on('connection', (socket) => {
       if (file[index].recordid === idTree.id) {
         console.log('tree found');
         dataTreeSelect = (file[index]);
-        const treeDetail = `${'<div id="bodyContent">' +
-                      '<p><b>Location : </b>'}${dataTreeSelect.fields.adresse}</p>` +
-                      `<p><b> Recorded : </b>${dataTreeSelect.record_timestamp}</p>` +
-                      `<p><b> Coordinate : </b>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</p>` +
-                      '</div>';
+        const treeDetail = `<th> ${dataTreeSelect.recordid}</th>` +
+                      `<th> ${dataTreeSelect.fields.adresse}</th>` +
+                      `<th>${dataTreeSelect.record_timestamp}</th>` +
+                      `<th>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</th>`;
         socket.emit('display tree', treeDetail);
       }
     }
