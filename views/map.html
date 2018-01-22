@@ -10,6 +10,10 @@
 			height: 600px;
 			width: 100%;
 		}
+		#table {
+			/* height: 600px; */
+			width: 100%;
+		}
 
 	</style>
 
@@ -31,64 +35,91 @@
 	</header>
 	
 	<div id="map"/>
-	
+	<div id="table"/>
+
 </body>
 
 <script>
-	function initMap() {
 
-		var uluru = {
+	let arrTreeSelect = [];
+
+	function initMap() {
+		const uluru = {
 			lat: 43.624984999999995,
-			lng: 1.4319346
+			lng: 1.4319346,
 		};
 
-		var map = new google.maps.Map(document.getElementById('map'), {
+		const map = new google.maps.Map(document.getElementById('map'), {
 			zoom: 12,
-			center: uluru
+			center: uluru,
 		});
 
-		$.get("/dataJson", (data) => {
+		$.get('/dataJson', (data) => {
 			data.forEach((dataTree) => {
+			const contentString = `${'<div id="content">' +
+						'<div id="siteNotice">' +
+						'</div>' +
+						'<h1 id="firstHeading" class="firstHeading">'}${dataTree[0]}</h1>` +
+						'<div id="bodyContent">' +
+						`<p><b> Location : </b>${dataTree[1]}</p>` +
+						`<p><b> Recorded : </b>${dataTree[2]}</p>` +
+						`<p><b> Coordinate : </b>[${dataTree[3]},${dataTree[4]}]</p>` +
+						`<p> <button type="button" class="btn btn-success" ` +
+						`onclick=` + selectTree(dataTree[6]) + `>Detail</button>` +
+						// `onclick={window.location.href="/dataJson/${dataTree[6]}"}>Detail</button>` +
+			'</div></div>';
 
-				let contentString = '<div id="content">' +
-					'<div id="siteNotice">' +
-					'</div>' +
-					'<h1 id="firstHeading" class="firstHeading">' + dataTree[0] + '</h1>' +
-					'<div id="bodyContent">' +
-					'<p><b> Location : </b>' + dataTree[1] + '</p>' +
-					'<p><b> Recorded : </b>' + dataTree[2] + '</p>' +
-					'<p><b> Coordinate : </b>' + '[' + dataTree[3] + ',' + dataTree[4] + ']' + '</p>' +
-					'<p> <button type="button" class="btn btn-success" onclick=window.location.href="/dataJson/' + dataTree[6] + '">Detail</button>'
-					'</div></div>';
+			const infowindow = new google.maps.InfoWindow({
+				content: contentString,
+				position: {
+				lat: dataTree[3],
+				lng: dataTree[4],
+				},
+			});
 
-				let infowindow = new google.maps.InfoWindow({
-					content: contentString,
-					position: {
-						lat: dataTree[3],
-						lng: dataTree[4]
-					}
-				});
+			//   const flightPlanCoordinates = new Array(dataTree[5].length);
 
+			const flightPath = new google.maps.Polyline({
+				path: dataTree[5],
+				geodesic: true,
+				strokeColor: '#73BA37',
+				strokeOpacity: 0.6,
+				strokeWeight: 6,
+			});
 
-				let flightPlanCoordinates = new Array(dataTree[5].length);
+			flightPath.addListener('click', () => {
+				infowindow.open(map);
+			});
 
-				var flightPath = new google.maps.Polyline({
-					path: dataTree[5],
-					geodesic: true,
-					strokeColor: '#73BA37',
-					strokeOpacity: .6,
-					strokeWeight: 6
-				});
+			flightPath.setMap(map);
+			});
+		});
+	} //endfunction initMap
 
-				flightPath.addListener('click', function() {
-					infowindow.open(map);
-				})
+	function selectTree(recordId){		
+		console.log('call selectTree = '+ recordId);
+		arrTreeSelect.push(recordId);
+	}
 
-				flightPath.setMap(map);
+	function displayTrees(){
+		let tableData = [];
+		
+		arrTreeSelect.forEach((tree) =>{
+			$.get('+§dataJson/'+tree ,(dataTreeSelect) => {
+				console.log('call selectTree = '+ tree);
+				tableData.push(dataTreeSelect);
+			}) 
+		});
 
-			})
-		})
-	};
+		tableData.forEach((tree) => {
+			console.log('display selectTree = '+ tree.recordid);
+			$('#table') += '<div id="bodyContent">' +
+                '<p><b>Location : </b>' + tree.fields.adresse + '</p>' +
+                '<p><b> Recorded : </b>' + tree.record_timestamp + '</p>' +
+                '<p><b> Coordinate : </b>' + '[' + tree.geometry.coordinates[1] + ',' + tree.geometry.coordinates[0] + ']' + '</p>' +
+                '</div>' ;
+		});
+	}
 
 </script>
 

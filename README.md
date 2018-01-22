@@ -16,12 +16,13 @@
 <br> => donnée extrait et formaté du fichier json pour etre lu par la carte.<br>
 
 ``` /dataJson/:id ``` 
-<br> => donnée extrait et formaté d' un arbre du fichier json.<br>
+<br> => donnée extrait et formaté d' un arbre avec recordid == :id du fichier json.<br>
 
 <b>Idea :</b>
  
  - [ ] Gestion de compte / session 
  - [ ] Ajout d'arbre 
  - [ ] filtre de recherche sur la carte 
- - [ ] formuliare d'edition des arbres / compte 
+ - [ ] formulaire d'édition des arbres / comptes 
+ - [ ] formulaire de login 
 

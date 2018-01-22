@@ -21,6 +21,11 @@ app.get('/', (req, res) => {
   });
 });
 
+// app.get('/tree/:id', (req, res) => {
+//   const { id } = req.params;
+//   // app.get(`/dataJson/${id}`, (res2) => {  });
+// });
+
 app.get('/dataJson/:id', (req, res) => {
   const { id } = req.params;
   for (let index = 0; index < file.length; index += 1) {
@@ -51,8 +56,16 @@ app.get('/dataJson', (req, res) => {
       });
     }
 
-    const markerCoord = val.geometry.coordinates;
-    const arrTree = [val.fields.patrimoine, val.fields.adresse, val.record_timestamp, markerCoord[1], markerCoord[0], flightPlanCoordinates, val.recordid];
+    const markerLng = val.geometry.coordinates[1];
+    const markerLat = val.geometry.coordinates[0];
+    const arrTree = [];
+    arrTree[0] = val.fields.patrimoine;
+    arrTree[1] = val.fields.adresse;
+    arrTree[2] = val.record_timestamp;
+    arrTree[3] = markerLng;
+    arrTree[4] = markerLat;
+    arrTree[5] = flightPlanCoordinates;
+    arrTree[6] = val.recordid;
     arr.push(arrTree);
   });
   res.json(arr);
