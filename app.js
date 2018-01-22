@@ -2,8 +2,11 @@ const express = require('express');
 const fs = require('fs');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
+const util = require('util');
 
 const app = express();
+const server = require('http').createServer(app);
+
 const file = require('./app/data/arbres-d-alignement.json');
 
 app.use(bodyParser.json());
@@ -70,7 +73,56 @@ app.get('/dataJson', (req, res) => {
   });
   res.json(arr);
 });
+// Socket IO de communication en temps réel ;
+const io = require('socket.io')(server);
 
+io.sockets.on('connection', (socket) => {
+  console.log('socket connected');
+  socket.on('myClick', (data) => {
+    console.log(`myClick detected = ${(data)}`);
+    // socket.broadcast.emit('myClick', data);
+  });
+
+  socket.on('showTree', (idTree) => {
+    console.log('showTree handled');
+    // console.log(`${util.inspect(idTree)}`);
+    let dataTreeSelect = null;
+    for (let index = 0; index < file.length; index += 1) {
+      // console.log(`i = ${index}, id =  ${file[index].recordid} compared to ${idTree}`);
+      if (file[index].recordid === idTree.id) {
+        console.log('tree found');
+        dataTreeSelect = (file[index]);
+        const treeDetail = `${'<div id="bodyContent">' +
+                      '<p><b>Location : </b>'}${dataTreeSelect.fields.adresse}</p>` +
+                      `<p><b> Recorded : </b>${dataTreeSelect.record_timestamp}</p>` +
+                      `<p><b> Coordinate : </b>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</p>` +
+                      '</div>';
+        socket.emit('display tree', treeDetail);
+      }
+    }
+
+    // { app.get(`/dataJson/${idTree}`, (dataTreeSelect) => {
+    //   console.log(`call selectTree = ${dataTreeSelect}`);
+    //   // tableData.push(dataTreeSelect);
+
+    //   // $('#table').append($('<li>').text(treeDetail));
+    // }); }
+    // window.scrollTo(0, document.body.scrollHeight);
+  });
+});
+
+// io.on('/tree/:id', (req, socket) => {
+//   const { id } = req.params;
+//   console.log(`Un arbre cliqué ${id}!`);
+//   socket.emit('message', 'Vous êtes bien connecté !');
+// });
+
+// io.on('connection', (client) => {
+//   client.on('event', (data) => {});
+//   // client.on('disconnect', () => {});
+// });
+
+server.listen(3000);
 
 console.log('App Launched on post 3000 ');
-app.listen(3000);
+// app.listen(3000);

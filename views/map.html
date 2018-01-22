@@ -7,7 +7,7 @@
 
 	<style>
 		#map {
-			height: 600px;
+			height: 400px;
 			width: 100%;
 		}
 		#table {
@@ -18,6 +18,25 @@
 	</style>
 
 </head>
+	<!-- #region  SocketIO-->
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		// Transmission des click dans la socket;
+		$(document).on('click', function(event){
+			console.log(`click on doc on = id = ${event.target.id} + value = ${event.target.value} `);
+			socket.emit('showTree', {id: event.target.value});
+		});
+
+		var socket = io();
+
+		//Recuperation des données apres le clic;
+		socket.on('display tree', (data) => {
+			console.log("data received");
+			$('#table').append($('<li>').html(data));
+		})
+		
+	</script>
+	<!-- #endregion -->
 
 <body>
 	<!-- As a heading -->
@@ -33,95 +52,100 @@
 			</ul>
 		</div>
 	</header>
+
+	<div id="map"></div>
+	<!-- #region Script InitMap -->
+	<script>
+
+		// let arrTreeSelect = [];
 	
-	<div id="map"/>
-	<div id="table"/>
+		function initMap() {
+			const uluru = {
+				lat: 43.624984999999995,
+				lng: 1.4319346,
+			};
+	
+			const map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 12,
+				center: uluru,
+			});
+	
+			$.get('/dataJson', (data) => {
+				data.forEach((dataTree) => {
+				const contentString = `${'<div id="content">' +
+							'<div id="siteNotice">' +
+							'</div>' +
+							'<h1 id="firstHeading" class="firstHeading">'}${dataTree[0]}</h1>` +
+							'<div id="bodyContent">' +
+							`<p><b> Location : </b>${dataTree[1]}</p>` +
+							`<p><b> Recorded : </b>${dataTree[2]}</p>` +
+							`<p><b> Coordinate : </b>[${dataTree[3]},${dataTree[4]}]</p>` +
+							`<p> <button id="treeDetail" type="button" class="btn btn-success" ` +
+							`value=` + dataTree[6] + `>Detail</button>` +
+							// `onclick=` + selectTree(dataTree[6]) + `>Detail</button>` +
+							// `onclick={window.location.href="/dataJson/${dataTree[6]}"}>Detail</button>` +
+				'</div></div>';
+	
+				const infowindow = new google.maps.InfoWindow({
+					content: contentString,
+					position: {
+					lat: dataTree[3],
+					lng: dataTree[4],
+					},
+				});
+	
+				//   const flightPlanCoordinates = new Array(dataTree[5].length);
+	
+				const flightPath = new google.maps.Polyline({
+					path: dataTree[5],
+					geodesic: true,
+					strokeColor: '#73BA37',
+					strokeOpacity: 0.6,
+					strokeWeight: 6,
+				});
+	
+				flightPath.addListener('click', () => {
+					infowindow.open(map);
+				});
+	
+				flightPath.setMap(map);
+				});
+			});
+		} //endfunction initMap
+	
+		// function selectTree(recordId){		
+		// 	console.log('call selectTree = '+ recordId);
+		// 	arrTreeSelect.push(recordId);
+		// }
+	
+		// function displayTrees(){
+		// 	let tableData = [];
+	
+		// 	arrTreeSelect.forEach((tree) =>{
+		// 		$.get('+§dataJson/'+tree ,(dataTreeSelect) => {
+		// 			console.log('call selectTree = '+ tree);
+		// 			tableData.push(dataTreeSelect);
+		// 		}) 
+		// 	});
+	
+		// 	tableData.forEach((tree) => {
+		// 		console.log('display selectTree = '+ tree.recordid);
+		// 		$('#table') += '<div id="bodyContent">' +
+		// 			'<p><b>Location : </b>' + tree.fields.adresse + '</p>' +
+		// 			'<p><b> Recorded : </b>' + tree.record_timestamp + '</p>' +
+		// 			'<p><b> Coordinate : </b>' + '[' + tree.geometry.coordinates[1] + ',' + tree.geometry.coordinates[0] + ']' + '</p>' +
+		// 			'</div>' ;
+		// 	});
+		// }
+	
+	</script>
+	<!-- #endregion -->
+
+	<div id="table"> </div>
+	<!-- <h1>Communication avec socket.io !</h1> -->
 
 </body>
 
-<script>
-
-	let arrTreeSelect = [];
-
-	function initMap() {
-		const uluru = {
-			lat: 43.624984999999995,
-			lng: 1.4319346,
-		};
-
-		const map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 12,
-			center: uluru,
-		});
-
-		$.get('/dataJson', (data) => {
-			data.forEach((dataTree) => {
-			const contentString = `${'<div id="content">' +
-						'<div id="siteNotice">' +
-						'</div>' +
-						'<h1 id="firstHeading" class="firstHeading">'}${dataTree[0]}</h1>` +
-						'<div id="bodyContent">' +
-						`<p><b> Location : </b>${dataTree[1]}</p>` +
-						`<p><b> Recorded : </b>${dataTree[2]}</p>` +
-						`<p><b> Coordinate : </b>[${dataTree[3]},${dataTree[4]}]</p>` +
-						`<p> <button type="button" class="btn btn-success" ` +
-						`onclick=` + selectTree(dataTree[6]) + `>Detail</button>` +
-						// `onclick={window.location.href="/dataJson/${dataTree[6]}"}>Detail</button>` +
-			'</div></div>';
-
-			const infowindow = new google.maps.InfoWindow({
-				content: contentString,
-				position: {
-				lat: dataTree[3],
-				lng: dataTree[4],
-				},
-			});
-
-			//   const flightPlanCoordinates = new Array(dataTree[5].length);
-
-			const flightPath = new google.maps.Polyline({
-				path: dataTree[5],
-				geodesic: true,
-				strokeColor: '#73BA37',
-				strokeOpacity: 0.6,
-				strokeWeight: 6,
-			});
-
-			flightPath.addListener('click', () => {
-				infowindow.open(map);
-			});
-
-			flightPath.setMap(map);
-			});
-		});
-	} //endfunction initMap
-
-	function selectTree(recordId){		
-		console.log('call selectTree = '+ recordId);
-		arrTreeSelect.push(recordId);
-	}
-
-	function displayTrees(){
-		let tableData = [];
-		
-		arrTreeSelect.forEach((tree) =>{
-			$.get('+§dataJson/'+tree ,(dataTreeSelect) => {
-				console.log('call selectTree = '+ tree);
-				tableData.push(dataTreeSelect);
-			}) 
-		});
-
-		tableData.forEach((tree) => {
-			console.log('display selectTree = '+ tree.recordid);
-			$('#table') += '<div id="bodyContent">' +
-                '<p><b>Location : </b>' + tree.fields.adresse + '</p>' +
-                '<p><b> Recorded : </b>' + tree.record_timestamp + '</p>' +
-                '<p><b> Coordinate : </b>' + '[' + tree.geometry.coordinates[1] + ',' + tree.geometry.coordinates[0] + ']' + '</p>' +
-                '</div>' ;
-		});
-	}
-
-</script>
 
 <!--Deployement de la map-->
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrmAKRosfqSjSXvy2aLhZC7yyhVZ66JAs&callback=initMap"></script>
