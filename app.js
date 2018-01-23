@@ -88,7 +88,13 @@ io.sockets.on('connection', (socket) => {
         const treeDetail = `<th id= ${dataTreeSelect.recordid}> ${dataTreeSelect.recordid}</th>` +
                       `<td> ${dataTreeSelect.fields.adresse}</td>` +
                       `<td>${dataTreeSelect.record_timestamp}</td>` +
-                      `<td>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</td>`;
+                      `<td>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</td>` +
+                      '<td><div class="btn-group" role="group" aria-label="Basic example">' +
+                      '<button type="button" class="btn btn-primary">Stop tracking</button>' +
+          `<a id="editTree" data-toggle="modal" data-id="${dataTreeSelect.recordid}" class="btn btn-warning">Edit</a>` +
+          // `<button type="button" id="editTree" class="btn btn-warning" data-toggle="modal" data-target="#modalEditTree" data-id="${dataTreeSelect.recordid}">Edit</button>`
+        '<button type="button" class="btn btn-danger">Remove</button>' +
+                      '</div></td>';
         socket.emit('display tree', treeDetail);
       }
     }
