@@ -23,8 +23,13 @@
 	<script>
 		// Transmission des click dans la socket;
 		$(document).on('click', function(event){
-			console.log(`click on doc on = id = ${event.target.id} + value = ${event.target.value} `);
-			socket.emit('showTree', {id: event.target.value});
+			// Si le bouton est deja actif (tree deja tracker)
+			if (event.target.getAttribute("aria-pressed") == "true" ){
+				$(`#${event.target.value}`).parent().remove();
+			// Si le bouton n'est pas actif (tree non tracker)
+			} else {
+				socket.emit('showTree', {id: event.target.value});
+			}
 		});
 
 		var socket = io();
@@ -80,8 +85,10 @@
 							`<p><b> Location : </b>${dataTree[1]}</p>` +
 							`<p><b> Recorded : </b>${dataTree[2]}</p>` +
 							`<p><b> Coordinate : </b>[${dataTree[3]},${dataTree[4]}]</p>` +
-							`<p> <button id="treeDetail" type="button" class="btn btn-success" ` +
-							`value=` + dataTree[6] + `>Detail</button>` +
+							`<button id="treeDetail" type="button" class="btn btn-primary" data-toggle="button" 
+							aria-pressed="false" autocomplete="off" value= ${dataTree[6]} > Track this tree </button>` +
+							// `<p> <button id="treeDetail" type="button" class="btn btn-success" ` +
+							// `value=` + dataTree[6] + `>Detail</button>` +
 							// `onclick=` + selectTree(dataTree[6]) + `>Detail</button>` +
 							// `onclick={window.location.href="/dataJson/${dataTree[6]}"}>Detail</button>` +
 				'</div></div>';

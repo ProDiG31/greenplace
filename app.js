@@ -2,7 +2,6 @@ const express = require('express');
 const fs = require('fs');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
-const util = require('util');
 
 const app = express();
 const server = require('http').createServer(app);
@@ -11,10 +10,13 @@ const file = require('./app/data/arbres-d-alignement.json');
 
 app.use(bodyParser.json());
 
+// path vers les ressources;
 app.use('/css', express.static(`${__dirname}/views/css`));
 app.use('/js', express.static(`${__dirname}/views/js`));
 app.use('/data', express.static(`${__dirname}/views/data`));
 
+// path de redirection
+// Path /
 app.get('/', (req, res) => {
   fs.readFile('./views/map.html', 'utf-8', (error, content) => {
     res.writeHead(200, {
@@ -24,11 +26,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// app.get('/tree/:id', (req, res) => {
-//   const { id } = req.params;
-//   // app.get(`/dataJson/${id}`, (res2) => {  });
-// });
-
+// Path /dataJson/:id
 app.get('/dataJson/:id', (req, res) => {
   const { id } = req.params;
   for (let index = 0; index < file.length; index += 1) {
@@ -39,6 +37,7 @@ app.get('/dataJson/:id', (req, res) => {
   res.redirect('back');
 });
 
+// Path /dataJson
 app.get('/dataJson', (req, res) => {
   const arr = [];
   file.forEach((val) => {
@@ -59,67 +58,42 @@ app.get('/dataJson', (req, res) => {
       });
     }
 
-    const markerLng = val.geometry.coordinates[1];
-    const markerLat = val.geometry.coordinates[0];
-    const arrTree = [];
-    arrTree[0] = val.fields.patrimoine;
-    arrTree[1] = val.fields.adresse;
-    arrTree[2] = val.record_timestamp;
-    arrTree[3] = markerLng;
-    arrTree[4] = markerLat;
-    arrTree[5] = flightPlanCoordinates;
-    arrTree[6] = val.recordid;
+    const arrTree = [val.fields.patrimoine,
+      val.fields.adresse,
+      val.record_timestamp,
+      val.geometry.coordinates[1],
+      val.geometry.coordinates[0],
+      flightPlanCoordinates,
+      val.recordid];
+
     arr.push(arrTree);
   });
   res.json(arr);
 });
+
 // Socket IO de communication en temps réel ;
 const io = require('socket.io')(server);
 
 io.sockets.on('connection', (socket) => {
   console.log('socket connected');
-  socket.on('myClick', (data) => {
-    console.log(`myClick detected = ${(data)}`);
-    // socket.broadcast.emit('myClick', data);
-  });
 
+  // Action de tracking des données d'un tree;
   socket.on('showTree', (idTree) => {
     console.log('showTree handled');
-    // console.log(`${util.inspect(idTree)}`);
     let dataTreeSelect = null;
     for (let index = 0; index < file.length; index += 1) {
-      // console.log(`i = ${index}, id =  ${file[index].recordid} compared to ${idTree}`);
       if (file[index].recordid === idTree.id) {
         console.log('tree found');
         dataTreeSelect = (file[index]);
-        const treeDetail = `<th> ${dataTreeSelect.recordid}</th>` +
-                      `<th> ${dataTreeSelect.fields.adresse}</th>` +
-                      `<th>${dataTreeSelect.record_timestamp}</th>` +
-                      `<th>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</th>`;
+        const treeDetail = `<th id= ${dataTreeSelect.recordid}> ${dataTreeSelect.recordid}</th>` +
+                      `<td> ${dataTreeSelect.fields.adresse}</td>` +
+                      `<td>${dataTreeSelect.record_timestamp}</td>` +
+                      `<td>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</td>`;
         socket.emit('display tree', treeDetail);
       }
     }
-
-    // { app.get(`/dataJson/${idTree}`, (dataTreeSelect) => {
-    //   console.log(`call selectTree = ${dataTreeSelect}`);
-    //   // tableData.push(dataTreeSelect);
-
-    //   // $('#table').append($('<li>').text(treeDetail));
-    // }); }
-    // window.scrollTo(0, document.body.scrollHeight);
   });
 });
-
-// io.on('/tree/:id', (req, socket) => {
-//   const { id } = req.params;
-//   console.log(`Un arbre cliqué ${id}!`);
-//   socket.emit('message', 'Vous êtes bien connecté !');
-// });
-
-// io.on('connection', (client) => {
-//   client.on('event', (data) => {});
-//   // client.on('disconnect', () => {});
-// });
 
 server.listen(3000);
 
