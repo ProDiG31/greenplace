@@ -2,11 +2,13 @@ const express = require('express');
 const fs = require('fs');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
+const pug = require('pug');
 
 const app = express();
 const server = require('http').createServer(app);
 
 const router = express.Router();
+
 const file = require('./app/data/arbres-d-alignement.json');
 
 router.use(bodyParser.json());
@@ -97,10 +99,10 @@ io.sockets.on('connection', (socket) => {
                       `<td>${dataTreeSelect.record_timestamp}</td>` +
                       `<td>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</td>` +
                       '<td><div class="btn-group" role="group" aria-label="Basic example">' +
-                      '<button type="button" class="btn btn-primary">Stop tracking</button>' +
-          `<a id="editTree" data-toggle="modal" data-id="${dataTreeSelect.recordid}" class="btn btn-warning">Edit</a>` +
+                      `<a id="stopTrack" type="button" class="btn btn-primary" data-id=" ${dataTreeSelect.recordid}">Stop tracking</a>` +
+                      `<a id="editTree" data-toggle="modal" data-id="${dataTreeSelect.recordid}" class="btn btn-warning">Edit</a>` +
           // `<button type="button" id="editTree" class="btn btn-warning" data-toggle="modal" data-target="#modalEditTree" data-id="${dataTreeSelect.recordid}">Edit</button>`
-        '<button type="button" class="btn btn-danger">Remove</button>' +
+                      '<button type="button" class="btn btn-danger">Remove</button>' +
                       '</div></td>';
         socket.emit('display tree', treeDetail);
       }
