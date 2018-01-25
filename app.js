@@ -6,18 +6,25 @@ const bodyParser = require('body-parser');
 const app = express();
 const server = require('http').createServer(app);
 
+const router = express.Router();
 const file = require('./app/data/arbres-d-alignement.json');
 
-app.use(bodyParser.json());
+router.use(bodyParser.json());
 
 // path vers les ressources;
-app.use('/css', express.static(`${__dirname}/views/css`));
-app.use('/js', express.static(`${__dirname}/views/js`));
-app.use('/data', express.static(`${__dirname}/views/data`));
+router.use('/css', express.static(`${__dirname}/views/css`));
+router.use('/js', express.static(`${__dirname}/views/js`));
+router.use('/data', express.static(`${__dirname}/views/data`));
+
+// a middleware function with no mount path. This code is executed for every request to the router
+router.use((req, res, next) => {
+  console.log('Time:', Date.now());
+  next();
+});
 
 // path de redirection
 // Path /
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
   fs.readFile('./views/map.html', 'utf-8', (error, content) => {
     res.writeHead(200, {
       'Content-Type': 'text/html',
@@ -27,18 +34,18 @@ app.get('/', (req, res) => {
 });
 
 // Path /dataJson/:id
-app.get('/dataJson/:id', (req, res) => {
+router.get('/dataJson/:id', (req, res) => {
   const { id } = req.params;
   for (let index = 0; index < file.length; index += 1) {
     if (file[index].recordid === id) {
       res.json(file[index]);
     }
   }
-  res.redirect('back');
+  // res.redirect('back');
 });
 
 // Path /dataJson
-app.get('/dataJson', (req, res) => {
+router.get('/dataJson', (req, res) => {
   const arr = [];
   file.forEach((val) => {
     let coordinate = val.fields.geo_shape.coordinates;
@@ -100,6 +107,10 @@ io.sockets.on('connection', (socket) => {
     }
   });
 });
+
+
+// mount the router on the app
+app.use('/', router);
 
 server.listen(3000);
 
