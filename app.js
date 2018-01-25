@@ -81,34 +81,30 @@ router.get('/dataJson', (req, res) => {
   res.json(arr);
 });
 
-// Socket IO de communication en temps réel ;
+// Instanciation de la Socket IO de communication en temps réel ;
 const io = require('socket.io')(server);
 
 io.sockets.on('connection', (socket) => {
   console.log('socket connected');
-
-  // Action de tracking des données d'un tree;
+  // Action de ajout d'un tree au tableau de tracking ;
   socket.on('showTree', (idTree) => {
     console.log('showTree handled');
     let dataTreeSelect = null;
+
+    // Compilation du template;
+    const compiledTemplate = pug.compileFile('views/template/tableRow.pug');
+
     for (let index = 0; index < file.length; index += 1) {
       if (file[index].recordid === idTree.id) {
         console.log('tree found');
         dataTreeSelect = (file[index]);
-        const treeDetail = `<th id= ${dataTreeSelect.recordid}> ${dataTreeSelect.recordid}</th>` +
-                      `<td> ${dataTreeSelect.fields.adresse}</td>` +
-                      `<td>${dataTreeSelect.record_timestamp}</td>` +
-                      `<td>[${dataTreeSelect.geometry.coordinates[1]},${dataTreeSelect.geometry.coordinates[0]}]</td>` +
-                      '<td><div class="btn-group" role="group" aria-label="Basic example">' +
-                      `<a id="stopTrack" type="button" class="btn btn-primary" data-id=" ${dataTreeSelect.recordid}">Stop tracking</a>` +
-                      `<a id="editTree" data-toggle="modal" data-id="${dataTreeSelect.recordid}" class="btn btn-warning">Edit</a>` +
-          // `<button type="button" id="editTree" class="btn btn-warning" data-toggle="modal" data-target="#modalEditTree" data-id="${dataTreeSelect.recordid}">Edit</button>`
-                      '<button type="button" class="btn btn-danger">Remove</button>' +
-                      '</div></td>';
+        // Compilation du template avec les données;
+        const treeDetail = compiledTemplate({ dataTreeSelect });
         socket.emit('display tree', treeDetail);
       }
     }
   });
+  // socket.on('');
 });
 
 
