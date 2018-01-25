@@ -20,7 +20,8 @@ router.use('/data', express.static(`${__dirname}/views/data`));
 
 // a middleware function with no mount path. This code is executed for every request to the router
 router.use((req, res, next) => {
-  console.log('Time:', Date.now());
+  const date = new Date();
+  console.log(`[Time]: ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()} - [Method]: ${req.method} [URL]: ${req.url}`);
   next();
 });
 
