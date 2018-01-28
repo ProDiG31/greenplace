@@ -37,17 +37,7 @@
 				console.log('click on edit');
 				$('#treeId').val(event.target.getAttribute("data-id"));
 				//Recuperation des info de l'arbre 
-				$.get(`/dataJson/${event.target.getAttribute("data-id")}`, (data) => {
-					$('#recordid').val(data.recordid);
-					$('#datasetid').val(data.datasetid);
-					$('#type').val(data.fields.geo_shape.type);
-					$('#coordinateslat').val(data.geometry.coordinates[1]);
-					$('#coordinateslng').val(data.geometry.coordinates[0]);
-					$('#patrimoine').val(data.fields.patrimoine);
-					$('#adresse').val(data.fields.adresse);
-					$('#timestamp').val(data.record_timestamp);
-					})
-				$('#modalEditTree').modal('show');
+				socket.emit('treeEditForm' ,{id: event.target.getAttribute("data-id")})
 			}
 
 			if (event.target.id == "stopTrack"){
@@ -64,6 +54,14 @@
 		socket.on('display tree', (data) => {
 			console.log("data received");
 			$('#tableBody').append($('<tr>').html(data));
+		})
+
+		//Recuperation du formulaire d'edition d'un arbre.
+		socket.on('treeEditFormThrow', (data) => {
+			console.log("Edit form received");
+			$('.modal-header').after($('<div id="bodyModal" class="modal-body"></div>').html(data));
+			$('#modalEditTree').modal('show');	
+					
 		})
 	
 	</script>
@@ -178,66 +176,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div id="bodyModal" class="modal-body">
-
-						<div class="form-group row">
-							<label for="recordid" class="col-sm-3 col-form-label">Tree id :</label>
-							<!-- <div class="col-sm-8"></div> -->
-								<input readonly type="text" class="col form-control-plaintext" id="recordid">
-							<!-- </div> -->
-						</div>
-						
-						<div class="form-group row">
-							<label for="datasetid" class="col-sm-3 col-form-label">Recorder id :</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control-plaintext" id="datasetid">
-							</div>
-						</div>
-
-						<div class="form-group row">
-							<label for="type" class="col-sm-3 col-form-label">type :</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control-plaintext" id="type">
-							</div>
-						</div>
-						<div class="form-group row">
-							<div class="col">
-								<label for="coordinateslng" class="col-sm-3 col-form-label">longitude</label>
-							</div>
-							<div class="col">
-								<label for="coordinateslat" class="col-sm-3 col-form-label">latitute</label>
-							</div>
-						</div>
-						<div class="form-group row">
-							<div class="col">
-								<input type="text" class="form-control-plaintext" id="coordinateslng">
-							</div>
-							<div class="col">
-									<input type="text" class="form-control-plaintext" id="coordinateslat">
-							</div>	
-						</div>	
-						
-						<div class="form-group row">
-								<label for="patrimoine" class="col-sm-3 col-form-label">Arbres :</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control-plaintext" id="patrimoine">
-								</div>
-						</div>
-
-						<div class="form-group row">
-								<label for="adresse" class="col-sm-3 col-form-label">Localisation :</label>
-								<div class="col-sm-8">
-									<input type="text" class="form-control-plaintext" id="adresse">
-								</div>
-						</div>
-
-						<div class="form-group row">
-							<label for="timestamp" class="col-sm-3 col-form-label">Timestamp :</label>
-							<div class="col-sm-8">
-								<input type="text" class="form-control-plaintext" id="timestamp">
-							</div>
-						</div>
-            </div>
+          
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Save changes</button>

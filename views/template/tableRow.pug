@@ -1,9 +1,9 @@
-th(id='#{dataTreeSelect.recordid}') #{dataTreeSelect.recordid} 
+th(id=`${dataTreeSelect.recordid}`) #{dataTreeSelect.recordid} 
     td #{dataTreeSelect.fields.adresse} 
     td #{dataTreeSelect.record_timestamp} 
     td [#{dataTreeSelect.geometry.coordinates[1]},#{dataTreeSelect.geometry.coordinates[0]}]
     td 
         div.btn-group(role="group")
-            a#stopTrack.btn.btn-primary(type="button" data-id='#{dataTreeSelect.recordid}') Stop tracking 
-            a#editTree.btn.btn-warning(data-toggle="modal" data-id='#{dataTreeSelect.recordid}') Edit 
+            a#stopTrack.btn.btn-primary(type="button" data-id=`${dataTreeSelect.recordid}`) Stop tracking 
+            a#editTree.btn.btn-warning(data-toggle="modal" data-id=`${dataTreeSelect.recordid}`) Edit 
             button.btn.btn-danger(type="button") Remove

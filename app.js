@@ -1,14 +1,21 @@
+// Module import by npm
 const express = require('express');
 const fs = require('fs');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
 const pug = require('pug');
 
+// Module instance
 const app = express();
 const server = require('http').createServer(app);
 
+// Router instance
 const router = express.Router();
 
+// Custom module in ./app/
+const dbmysql = require('./app/dbmysql');
+
+// json file in used
 const file = require('./app/data/arbres-d-alignement.json');
 
 router.use(bodyParser.json());
@@ -25,6 +32,9 @@ router.use((req, res, next) => {
   next();
 });
 
+// Routage des actions de base de donnée sur le module dbmysql
+router.use('/dbmysql', dbmysql);
+
 // path de redirection
 // Path /
 router.get('/', (req, res) => {
@@ -38,7 +48,7 @@ router.get('/', (req, res) => {
 
 // Path /dataJson/:id
 router.get('/dataJson/:id', (req, res) => {
-  const { id } = req.params;
+  const { id } = req.param.id;
   for (let index = 0; index < file.length; index += 1) {
     if (file[index].recordid === id) {
       res.json(file[index]);
@@ -104,7 +114,35 @@ io.sockets.on('connection', (socket) => {
       }
     }
   });
-  // socket.on('');
+
+  socket.on('treeEditForm', (idTree) => {
+    console.log('form request');
+    for (let index = 0; index < file.length; index += 1) {
+      if (file[index].recordid === idTree.id) {
+        console.log('tree found');
+        const dataTreeSelect = (file[index]);
+        // console.log(dataTreeSelect);
+        // console.log('heelo');
+        const compiledTemplate = pug.compileFile('views/template/inputModal.pug');
+        let treeForm = '';
+        Object.keys(dataTreeSelect).forEach((key, index) => {
+          if (dataTreeSelect && dataTreeSelect.hasOwnProperty(key)) {
+            data = dataTreeSelect[key];
+            treeForm += compiledTemplate({ data });
+          }
+        });
+        socket.emit('treeEditFormThrow', treeForm);
+      }
+    }
+    // $('#recordid').val(data.recordid);
+    // $('#datasetid').val(data.datasetid);
+    // $('#type').val(data.fields.geo_shape.type);
+    // $('#coordinateslat').val(data.geometry.coordinates[1]);
+    // $('#coordinateslng').val(data.geometry.coordinates[0]);
+    // $('#patrimoine').val(data.fields.patrimoine);
+    // $('#adresse').val(data.fields.adresse);
+    // $('#timestamp').val(data.record_timestamp);
+  });
 });
 
 
