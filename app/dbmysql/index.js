@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const mysql = require('mysql');
+const util = require('util');
 
 const router = express.Router();
 
@@ -37,20 +38,22 @@ router.use((req, res, next) => {
 });
 
 // Path /createDb
-router.post('/createDb', (req, res) => {
+router.get('/createDb', (req) => {
   // load create script
-  const file = fs.readFile('/query/create.sql');
-
+  const file = fs.readFileSync(`${__dirname}/querys/create.sql`, 'utf-8');
+  console.log(`file = ${file}`);
+  // console.log(`result1 = ${res}`);
+  // console.log(util.inspect(res));
+  // res.render(res);
   // Execute script
   connection.query(file, (err, result) => {
-    // done();
     if (err) {
       console.log('error: ', err);
-      process.exit(1);
     }
     console.log('db tables created ok');
-    process.exit(0);
+    console.log(`result2 =${util.inspect(result)}`);
   });
+
 });
 
 // // Path /dataJson/:id
