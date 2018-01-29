@@ -38,7 +38,7 @@ router.use((req, res, next) => {
 });
 
 // Path /createDb
-router.get('/createDb', (req) => {
+router.get('/createDb', (req, res) => {
   // load create script
   const file = fs.readFileSync(`${__dirname}/querys/create.sql`, 'utf-8');
   console.log(`file = ${file}`);
@@ -53,16 +53,6 @@ router.get('/createDb', (req) => {
     console.log('db tables created ok');
     console.log(`result2 =${util.inspect(result)}`);
   });
-
 });
-
-// // Path /dataJson/:id
-// router.get('/tree/:id', (req, res) => {
-//   const { id } = req.param.id
-// });
-// connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-//   if (error) throw error;
-//   console.log('The solution is: ', results[0].solution);
-// });
 
 module.exports = router;
