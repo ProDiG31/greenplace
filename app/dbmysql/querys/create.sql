@@ -1,26 +1,24 @@
--- USE dbgreenplace -- normalement la connection identifie deja la db utilisé 
+USE dbgreenplace; 
 
-CREATE TABLE tree 
-  ( 
-     user_id INT NOT NULL, 
-     record_id INT NOT NULL AUTO_INCREMENT, 
-     geo_shape_coordinates GEOMETRY, 
-     fields_patrimoine VARCHAR(22) CHARACTER SET utf8, 
-     fields_adresse VARCHAR(18) CHARACTER SET utf8, 
-     fields_geo_point_2d NUMERIC(12, 10), 
-     geometry_type VARCHAR(5) CHARACTER SET utf8, 
-     geometry_coordinates NUMERIC(12, 10), 
-     record_timestamp VARCHAR(25) CHARACTER SET utf8, 
-     PRIMARY KEY (recordid),
-     FOREIGN KEY (ownerid) REFERENCES user(user_id)
-  ) 
+CREATE TABLE IF NOT EXISTS user 
+( 
+  user_id      INT NOT NULL auto_increment, 
+  email        VARCHAR(80) NOT NULL, 
+  display_name VARCHAR(50) NOT NULL, 
+  password     VARCHAR(60) NOT NULL, 
+  PRIMARY KEY (user_id), 
+  UNIQUE INDEX (email) 
+); 
 
-CREATE TABLE user 
-  (
-    user_id INT NOT NULL AUTO_INCREMENT, 
-    email VARCHAR(80) NOT NULL,
-    display_name VARCHAR(50) NOT NULL,
-    password CHAR(41) NOT NULL,
-    PRIMARY KEY (user_id),
-    UNIQUE INDEX (email)
-  )
+CREATE TABLE IF NOT EXISTS tree 
+( 
+  user_id               INT NOT NULL, 
+  tree_id               INT NOT NULL auto_increment, 
+  geo_shape_coordinates GEOMETRY, 
+  patrimoine            VARCHAR(22) CHARACTER SET utf8, 
+  adresse               VARCHAR(18) CHARACTER SET utf8, 
+  geometry_point        GEOMETRY, 
+  record_date           DATETIME DEFAULT CURRENT_TIMESTAMP, 
+  PRIMARY KEY (tree_id), 
+  FOREIGN KEY (user_id) REFERENCES user(user_id) 
+); 

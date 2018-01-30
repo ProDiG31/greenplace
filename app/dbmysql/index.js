@@ -12,8 +12,9 @@ router.use('/css', express.static(`${__dirname}/querys`));
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '',
+  password: 'root',
   database: 'dbGreenPlace',
+  port: '3306',
 });
 
 //  Log de d'appel sur le module dbmysql
@@ -40,19 +41,30 @@ router.use((req, res, next) => {
 // Path /createDb
 router.get('/createDb', (req, res) => {
   // load create script
-  const file = fs.readFileSync(`${__dirname}/querys/create.sql`, 'utf-8');
-  console.log(`file = ${file}`);
+  const fileCreate = fs.readFileSync(`${__dirname}/querys/create.sql`, 'utf-8');
+  // console.log(`file = ${fileCreate}`);
   // console.log(`result1 = ${res}`);
   // console.log(util.inspect(res));
   // res.render(res);
   // Execute script
-  connection.query(file, (err, result) => {
+  connection.query(fileCreate, (err, result) => {
     if (err) {
       console.log('error: ', err);
+    } else {
+      console.log('db tables created ok');
     }
-    console.log('db tables created ok');
-    console.log(`result2 =${util.inspect(result)}`);
+    // console.log(`result2 =${util.inspect(result)}`);
   });
 });
 
+router.get('/inputData', (req, res) => {
+  const fileInput = fs.readFileSync(`${__dirname}/querys/insertData.sql`, 'utf-8');
+  connection.query(fileInput, (err, result) => {
+    if (err) {
+      console.log('error: ', err);
+    } else {
+      console.log('db tables input ok');
+    }
+  });
+});
 module.exports = router;
