@@ -1,7 +1,9 @@
 const express = require('express');
-const fs = require('fs');
+// const fs = require('fs');
 const mysql = require('mysql');
-const util = require('util');
+const _ = require('lodash');
+
+const file = require('./querys/arbres.json');
 
 const router = express.Router();
 
@@ -25,46 +27,101 @@ router.use((req, res, next) => {
   // etablisement de la connection avec la base de donnée
   connection.connect((err) => {
     if (err) {
-      console.log('Error connecting to Db');
-      return;
+      console.log(`Error connecting to Db = ${err.stack}`);
+    } else {
+      console.log('Connection established');
     }
-    console.log('Connection established');
   });
 
   // routage vers la fonction appelé
   next();
+});
+
+// Path /createDb
+router.get('/createDb', () => {
+  // Create DB
+  connection.query('CREATE DATABASE IF NOT EXISTS dbgreenplace', (err) => {
+    if (err) throw err;
+    console.log('Database created or existing');
+  });
+
+  // load create script
+  const sql1 = `
+      CREATE TABLE IF NOT EXISTS user 
+      ( 
+        user_id      INT NOT NULL auto_increment, 
+        email        VARCHAR(80) NOT NULL, 
+        display_name VARCHAR(50) NOT NULL, 
+        password     VARCHAR(60) NOT NULL, 
+        PRIMARY KEY (user_id), 
+        UNIQUE INDEX (email) 
+      ); `;
+  const sql2 = `
+  CREATE TABLE IF NOT EXISTS tree 
+  ( 
+    user_id               INT NOT NULL, 
+    tree_id               INT NOT NULL auto_increment, 
+    geo_shape_coordinates GEOMETRY, 
+    patrimoine            VARCHAR(22) CHARACTER SET utf8, 
+    adresse               VARCHAR(18) CHARACTER SET utf8, 
+    geometry_point        GEOMETRY, 
+    record_date           DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    PRIMARY KEY (tree_id), 
+    FOREIGN KEY (user_id) REFERENCES user(user_id) 
+  );`;
+  // Execute script
+  connection.query(sql1, (err) => {
+    if (err) throw err;
+    console.log('db table "user" created or existing');
+  });
+
+  // Execute script
+  connection.query(sql2, (err) => {
+    if (err) throw err;
+    console.log('db tables "tree" created or existing');
+  });
 
   // fermeture de la connection
   connection.end();
 });
 
-// Path /createDb
-router.get('/createDb', (req, res) => {
-  // load create script
-  const fileCreate = fs.readFileSync(`${__dirname}/querys/create.sql`, 'utf-8');
-  // console.log(`file = ${fileCreate}`);
-  // console.log(`result1 = ${res}`);
-  // console.log(util.inspect(res));
-  // res.render(res);
-  // Execute script
-  connection.query(fileCreate, (err, result) => {
-    if (err) {
-      console.log('error: ', err);
-    } else {
-      console.log('db tables created ok');
-    }
-    // console.log(`result2 =${util.inspect(result)}`);
-  });
-});
+router.get('/inputData', () => {
+  let sql = 'INSERT INTO tree (user_id,geo_shape_coordinates, patrimoine, adresse, tree_id, geometry_point) VALUES';
+  file.forEach((element) => {
+    function fromJsontoGeoData(s) {
+      let data = JSON.stringify(s);
+      // data = _.replace(data, /\[/g, '(');
+      // data = _.replace(data, /]/g, ')');
+      // data = _.replace(data, /([0-9.]{10,20}),([0-9.]{10,20})/g, '$1 $2');
+      // data = _.replace(data, /\),\(/g, ') (');
+      // data = _.replace(data, /}/g, '\')');
+      // data = _.replace(data, /{/g, '(\'');
+      // data = _.replace(data, /U+002F/g, '');
+      // data = _.replace(data, /U+005C/g, '');
+      // data = _.replace(data, /{/g, '(\'');
 
-router.get('/inputData', (req, res) => {
-  const fileInput = fs.readFileSync(`${__dirname}/querys/insertData.sql`, 'utf-8');
-  connection.query(fileInput, (err, result) => {
+      data = (`('${data}')`);
+      return data;
+    }
+    const CHAR_QUOTE = '`';
+    sql += `(1,ST_GeomFromGeoJSON(${CHAR_QUOTE + JSON.stringify(element.fields.geo_shape) + CHAR_QUOTE}),`;
+    sql += `"${element.fields.patrimoine}",`;
+    sql += `"${element.fields.adresse}",`;
+    sql += `${element.fields.id},`;
+    sql += `ST_GeomFromGeoJSON(${CHAR_QUOTE + JSON.stringify(element.geometry) + CHAR_QUOTE})`;
+    // sql = _.replace(sql, /\\\\/g, ' ');
+    // sql = _.replace(sql, /U+005C/g, ' ');
+    sql += ',';
+  });
+
+  sql = `${sql.substring(0, sql.length - 1)};`;
+  connection.query(sql, (err) => {
     if (err) {
       console.log('error: ', err);
-    } else {
-      console.log('db tables input ok');
     }
   });
+
+  // fermeture de la connection
+  // connection.end();
 });
 module.exports = router;

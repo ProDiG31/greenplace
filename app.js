@@ -15,7 +15,7 @@ const router = express.Router();
 // Custom module in ./app/
 const dbmysql = require('./app/dbmysql');
 
-// json file in used
+// json file in used;
 const file = require('./app/data/arbres-d-alignement.json');
 
 router.use(bodyParser.json());
@@ -54,7 +54,6 @@ router.get('/dataJson/:id', (req, res) => {
       res.json(file[index]);
     }
   }
-  // res.redirect('back');
 });
 
 // Path /dataJson
@@ -145,11 +144,9 @@ io.sockets.on('connection', (socket) => {
   });
 });
 
-
 // mount the router on the app
 app.use('/', router);
 
+// define listening port of server
 server.listen(3000);
-
 console.log('App Launched on post 3000 ');
-// app.listen(3000);

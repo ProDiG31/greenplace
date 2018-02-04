@@ -1,4 +1,4 @@
-USE dbgreenplace; 
+-- USE dbgreenplace; 
 
 CREATE TABLE IF NOT EXISTS user 
 ( 
